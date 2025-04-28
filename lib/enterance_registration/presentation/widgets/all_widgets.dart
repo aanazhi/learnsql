@@ -1,0 +1,10 @@
+export 'widgets/auth_button.dart';
+export 'widgets/auth_snack_bar.dart';
+export 'widgets/back_button_app_bar.dart';
+export 'widgets/buttons_on_main_page.dart';
+export 'widgets/cources.dart';
+export 'widgets/custom_dropdown_auth.dart';
+export 'widgets/custom_text_form_field.dart';
+export 'widgets/studying.dart';
+export 'widgets/text_on_main_page.dart';
+export 'widgets/why_sql.dart';

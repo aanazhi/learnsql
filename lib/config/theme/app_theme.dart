@@ -103,4 +103,5 @@ class AppColors {
   static const Color greyColor = Color.fromRGBO(119, 119, 118, 1.0);
   static const Color textMediumColor = Color.fromRGBO(82, 82, 82, 1.0);
   static const Color withOpacityInActiveColor = Color.fromRGBO(0, 0, 0, 0.26);
+  static const Color greenColor = Color.fromRGBO(67, 160, 71, 1.0);
 }
