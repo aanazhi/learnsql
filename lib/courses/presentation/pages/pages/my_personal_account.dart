@@ -152,9 +152,7 @@ class _MyPersonalAccountScreenState
         return;
       }
 
-      final updatedEntity = await ref.read(
-        patchPersonalProvider(updateData).future,
-      );
+      await ref.read(patchPersonalProvider(updateData).future);
 
       ref.invalidate(getPersonalDataProvider);
       ref.invalidate(getGroupsProvider);
@@ -516,7 +514,15 @@ class _MyPersonalAccountScreenState
                                 Padding(
                                   padding: const EdgeInsets.only(top: 30),
                                   child: ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      if (context.mounted) {
+                                        Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          '/mainPage',
+                                          (Route<dynamic> route) => false,
+                                        );
+                                      }
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppColors.activeColor,
                                       minimumSize: const Size(270, 46),

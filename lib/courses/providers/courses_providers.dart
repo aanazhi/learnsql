@@ -13,6 +13,7 @@ import 'package:learnsql/courses/domain/personal_data/personal_data_entity/perso
 import 'package:learnsql/courses/domain/personal_data/personal_data_service/personal_data_service.dart';
 import 'package:learnsql/enterance_registration/providers/auth_reg_providers.dart';
 
+// Dio Providers
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
     BaseOptions(
@@ -49,25 +50,13 @@ final dioProvider = Provider<Dio>((ref) {
   return dio;
 });
 
+// API Providers
 final coursesApiProvider = Provider<CoursesApi>((ref) {
   final dio = ref.read(dioProvider);
   final talker = ref.watch(talkerProvider);
 
   return CoursesApiImpl(dio: dio, talker: talker);
 });
-
-final cousesServiceProvider = Provider<CoursesService>((ref) {
-  final coursesApi = ref.read(coursesApiProvider);
-  return CoursesServiceImpl(coursesApi: coursesApi);
-});
-
-final getAllCousesProvider = FutureProvider<CoursesListEntity>((ref) async {
-  final coursesService = ref.read(cousesServiceProvider);
-
-  return await coursesService.getAllCouses();
-});
-
-final bottomNavigationProvider = StateProvider<int>((ref) => 0);
 
 final feedbackApiProvider = Provider<FeedbackApi>((ref) {
   final dio = ref.read(dioProvider);
@@ -76,23 +65,35 @@ final feedbackApiProvider = Provider<FeedbackApi>((ref) {
   return FeedbackApiImpl(dio: dio, talker: talker);
 });
 
+final personalDataApiProvider = Provider<PersonalAccountApi>((ref) {
+  final dio = ref.read(dioProvider);
+  final talker = ref.watch(talkerProvider);
+
+  return PersonalAccountApiImpl(dio: dio, talker: talker);
+});
+
+// Service Providers
+final cousesServiceProvider = Provider<CoursesService>((ref) {
+  final coursesApi = ref.read(coursesApiProvider);
+  return CoursesServiceImpl(coursesApi: coursesApi);
+});
+
 final feedbackServiceProvider = Provider<FeedbackService>((ref) {
   final feedbackApi = ref.read(feedbackApiProvider);
   return FeedbackServiceImpl(feedbackApi: feedbackApi);
 });
 
-final addFeedbackProvider = FutureProvider.family<dynamic, Map<String, String>>(
-  (ref, data) async {
-    final feedbackService = ref.watch(feedbackServiceProvider);
-    final subject = data['subject'] ?? '';
-    final message = data['password'] ?? '';
+final personalDataServiceProvider = Provider<PersonalDataService>((ref) {
+  final personalAccountApi = ref.read(personalDataApiProvider);
+  return PersonalDataServiceImpl(personalAccountApi: personalAccountApi);
+});
 
-    return await feedbackService.feedbackAdd(
-      subject: subject,
-      message: message,
-    );
-  },
-);
+// Courses Providers
+final getAllCousesProvider = FutureProvider<CoursesListEntity>((ref) async {
+  final coursesService = ref.read(cousesServiceProvider);
+
+  return await coursesService.getAllCouses();
+});
 
 final addCourseProvider = FutureProvider.family<void, Map<String, dynamic>>((
   ref,
@@ -109,21 +110,25 @@ final joinedCoursesProvider = FutureProvider<List<int>>((ref) async {
   return await coursesService.getJoinedCoursesIds();
 });
 
+// Feedback Providers
+final addFeedbackProvider = FutureProvider.family<dynamic, Map<String, String>>(
+  (ref, data) async {
+    final feedbackService = ref.watch(feedbackServiceProvider);
+    final subject = data['subject'] ?? '';
+    final message = data['password'] ?? '';
+
+    return await feedbackService.feedbackAdd(
+      subject: subject,
+      message: message,
+    );
+  },
+);
+
 final themeFbProvider = StateProvider<bool>((ref) => false);
+
 final messageFbProvider = StateProvider<bool>((ref) => false);
 
-final personalDataApiProvider = Provider<PersonalAccountApi>((ref) {
-  final dio = ref.read(dioProvider);
-  final talker = ref.watch(talkerProvider);
-
-  return PersonalAccountApiImpl(dio: dio, talker: talker);
-});
-
-final personalDataServiceProvider = Provider<PersonalDataService>((ref) {
-  final personalAccountApi = ref.read(personalDataApiProvider);
-  return PersonalDataServiceImpl(personalAccountApi: personalAccountApi);
-});
-
+// Personal Account Providers
 final getPersonalDataProvider = FutureProvider<PersonalDataEntity>((ref) async {
   final personalDataService = ref.read(personalDataServiceProvider);
 
@@ -135,8 +140,6 @@ final getGroupsProvider = FutureProvider<GroupEntity>((ref) async {
 
   return await personalDataService.getGroupData();
 });
-
-final patchPersonalLoadingProvider = StateProvider<bool>((ref) => false);
 
 final patchPersonalProvider = FutureProvider.family<
   PersonalDataEntity,
@@ -152,32 +155,22 @@ final patchPersonalProvider = FutureProvider.family<
     if (data['group_number'] != null)
       'group_number': data['group_number'].toString(),
   });
-  if (kDebugMode) {
-    print('FormData: ${formData.fields}');
-  }
 
-  try {
-    final result = await personalDataService.patchPersonalData(
-      formData: formData,
-    );
-    if (kDebugMode) {
-      print('Update successful: $result');
-    }
-    return result;
-  } catch (e) {
-    if (kDebugMode) {
-      print('Update failed: $e');
-    }
-    rethrow;
-  }
+  final result = await personalDataService.patchPersonalData(
+    formData: formData,
+  );
+
+  return result;
 });
 
+// UI State Providers
+final bottomNavigationProvider = StateProvider<int>((ref) => 0);
 final isEditPersonalAccount = StateProvider<bool>((ref) => false);
-
 final personalChangesProvider = StateProvider<bool>((ref) => false);
-
 final selectedGroupInAccountProvider = StateProvider<int?>((ref) => null);
+final patchPersonalLoadingProvider = StateProvider<bool>((ref) => false);
 
+// Initial Values Providers
 final initialFirstNameProvider = StateProvider<String?>((ref) => null);
 final initialLastNameProvider = StateProvider<String?>((ref) => null);
 final initialGroupIdProvider = StateProvider<int?>((ref) => null);
