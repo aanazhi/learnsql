@@ -87,7 +87,10 @@ class CustomDropdownAuth<T> extends ConsumerWidget {
               onChanged: onChanged,
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading:
+              () => const Center(
+                child: CircularProgressIndicator(color: AppColors.activeColor),
+              ),
           error: (error, stackTrace) {
             return Text(
               'Ошибка загрузки',

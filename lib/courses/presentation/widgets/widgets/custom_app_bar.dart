@@ -62,8 +62,8 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       TabBar(
                         controller: controller,
                         tabs: const [
-                          Tab(text: 'Все курсы'),
-                          Tab(text: 'Мои курсы'),
+                          Tab(text: 'Задания'),
+                          Tab(text: 'Материалы'),
                         ],
                         indicator: const UnderlineTabIndicator(
                           borderSide: BorderSide(
@@ -98,6 +98,6 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize {
-    return Size.fromHeight(kToolbarHeight + (controller != null ? 48 : 0));
+    return Size.fromHeight(kToolbarHeight + (showButton ? 48 : 0));
   }
 }

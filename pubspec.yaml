@@ -47,6 +47,8 @@ dependencies:
   talker_flutter: ^4.7.2
   very_good_analysis: ^7.0.0
   collection: ^1.19.1
+  html: ^0.15.6
+  flutter_html: ^3.0.0
 
 dev_dependencies:
   flutter_test:

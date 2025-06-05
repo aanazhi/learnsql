@@ -26,7 +26,8 @@ abstract class AuthRegApi {
     required String username,
     required String password,
   });
-  Future<Map<String, String>?> getGoogleAccountData();
+  // Future<GoogleSignInAccount?> signInWithGoogle();
+  Future<void> signInWithGoogle();
   Future<Map<String, dynamic>> resetPassword();
   Future<List<String>> getOrganization();
   Future<List<String>> getPeriod();
@@ -56,11 +57,11 @@ class AuthRegApiImpl implements AuthRegApi {
        _refreshTokenLocalDataSource = refreshTokenLocalDataSource,
        _errorLocalDataSource = errorLocalDataSource,
        _googleSignIn = GoogleSignIn(
-         clientId:
-             '781734866323-bncl308f0i4g1artqqrcng8mb15dhvbf.apps.googleusercontent.com',
+         serverClientId:
+             '436575162733-hgfa1ac6f6c82q4d9cBb27m1szlkqr.apps.googleusercontent.com',
+         //  clientId:
+         //      '436575162733-hgfa1ac6f6c82qr4u9cl3b27m1s2lkqr.apps.googleusercontent.com',
          scopes: ['email', 'profile'],
-         hostedDomain: '',
-         forceCodeForRefreshToken: true,
        );
 
   @override
@@ -283,31 +284,32 @@ class AuthRegApiImpl implements AuthRegApi {
   }
 
   @override
-  Future<Map<String, String>?> getGoogleAccountData() async {
+  Future<void> signInWithGoogle() async {
     try {
-      // Попытка входа
-      final googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return null;
+      await Future.delayed(const Duration(seconds: 1));
+      GoogleSignInAccount? googleUser = await _googleSignIn.signInSilently();
 
-      // Обработка данных пользователя
-      final email = googleUser.email;
-      final displayName = googleUser.displayName ?? '';
+      googleUser ??= await _googleSignIn.signIn();
 
-      final names = displayName.split(' ');
-      final firstName = names.isNotEmpty ? names.first : '';
-      final lastName = names.length > 1 ? names.sublist(1).join(' ') : '';
+      if (googleUser == null) {
+        if (kDebugMode) {
+          print('Вход через Google отменен');
+        }
+        return;
+      }
 
-      return {
-        'email': email,
-        'username': email.split('@').first,
-        'first_name': firstName,
-        'last_name': lastName,
-        'display_name': displayName,
-      };
+      final auth = await googleUser.authentication;
+
+      if (kDebugMode) {
+        print('Успешный вход через Google');
+        print('Email: ${googleUser.email}');
+        print('Access Token: ${auth.accessToken}');
+        print('ID Token: ${auth.idToken}');
+      }
     } catch (e, stackTrace) {
       debugPrint('Google Sign-In Error: $e\n$stackTrace');
 
-      return null;
+      return;
     }
   }
 }

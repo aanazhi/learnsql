@@ -4,6 +4,7 @@ import 'package:talker/talker.dart';
 abstract class AccessTokenLocalDataSource {
   Future<void> setAccessToken(String accessToken);
   Future<String?> getAccessToken();
+  Future<void> clearAccessToken();
 }
 
 class AccessTokenLocalDataSourceImpl implements AccessTokenLocalDataSource {
@@ -40,6 +41,18 @@ class AccessTokenLocalDataSourceImpl implements AccessTokenLocalDataSource {
       _talker.log('💾 Saved access token to local storage');
     } catch (e, stackTrace) {
       _talker.error('❌ Failed to set access token', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> clearAccessToken() async {
+    try {
+      _sharedPreferences.remove(_cashKey);
+
+      _talker.log('🔑 Clear access token from local storage');
+    } catch (e, stackTrace) {
+      _talker.error('❌ Failed to clear access token', e, stackTrace);
       rethrow;
     }
   }

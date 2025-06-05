@@ -363,13 +363,9 @@ class _RegistrationAllScreenState extends ConsumerState<RegistrationAllScreen> {
                       authRegServiceProvider.future,
                     );
 
-                    final googleData = await authService.getGoogleAccountData();
-                    if (googleData != null) {
-                      Navigator.pushReplacementNamed(
-                        context,
-                        '/allCoursesFirst',
-                      );
-                    } else {}
+                    await authService.signInWithGoogle();
+
+                    Navigator.pushReplacementNamed(context, '/allCoursesFirst');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.backgroundColor,

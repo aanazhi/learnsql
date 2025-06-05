@@ -4,7 +4,8 @@ import 'package:learnsql/config/config.dart';
 import 'package:learnsql/enterance_registration/providers/auth_reg_providers.dart';
 
 class DraggableDebugButton extends ConsumerWidget {
-  const DraggableDebugButton({super.key});
+  final GlobalKey<NavigatorState> navigatorKey;
+  const DraggableDebugButton({super.key, required this.navigatorKey});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,7 +27,7 @@ class DraggableDebugButton extends ConsumerWidget {
         },
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/logs');
+            navigatorKey.currentState?.pushNamed('/logs');
           },
           backgroundColor: AppColors.greyColor,
           mini: true,

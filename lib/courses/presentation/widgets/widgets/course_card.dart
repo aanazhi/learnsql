@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learnsql/config/config.dart';
 
-class CourseCard extends StatelessWidget {
+class CourseCard extends ConsumerWidget {
+  final int id;
   final String title;
   final String title2;
   final int difficulty;
@@ -10,6 +12,7 @@ class CourseCard extends StatelessWidget {
   final VoidCallback onJoinPressed;
   const CourseCard({
     super.key,
+    required this.id,
     required this.title,
     required this.title2,
     required this.difficulty,
@@ -19,7 +22,7 @@ class CourseCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textStyle = Theme.of(context).textTheme;
 
     return Column(
@@ -112,7 +115,18 @@ class CourseCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(35),
                         ),
                       ),
-                      onPressed: isJoined ? () {} : onJoinPressed,
+                      onPressed:
+                          isJoined
+                              ? () {
+                                Navigator.of(
+                                  context,
+                                  rootNavigator: true,
+                                ).pushNamed(
+                                  '/tasks',
+                                  arguments: {'courseId': id},
+                                );
+                              }
+                              : onJoinPressed,
                       child:
                           isJoined
                               ? Row(

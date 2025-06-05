@@ -5,6 +5,7 @@ import 'package:learnsql/courses/domain/groups/group_entity/group_entity.dart';
 import 'package:learnsql/courses/presentation/widgets/all_widgets.dart';
 import 'package:learnsql/courses/providers/courses_providers.dart';
 import 'package:learnsql/enterance_registration/presentation/widgets/all_widgets.dart';
+import 'package:learnsql/enterance_registration/providers/auth_reg_providers.dart';
 
 class MyPersonalAccountScreen extends ConsumerStatefulWidget {
   const MyPersonalAccountScreen({super.key});
@@ -514,7 +515,23 @@ class _MyPersonalAccountScreenState
                                 Padding(
                                   padding: const EdgeInsets.only(top: 30),
                                   child: ElevatedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      final accessToken = await ref.read(
+                                        accessTokenLocalDataProvider.future,
+                                      );
+                                      await accessToken.clearAccessToken();
+
+                                      final refreshToken = await ref.read(
+                                        refreshTokenLocalDataProvider.future,
+                                      );
+                                      await refreshToken.clearRefreshToken();
+
+                                      ref
+                                          .read(loginEntProvider.notifier)
+                                          .state = false;
+                                      ref
+                                          .read(passwordEntProvider.notifier)
+                                          .state = false;
                                       if (context.mounted) {
                                         Navigator.pushNamedAndRemoveUntil(
                                           context,

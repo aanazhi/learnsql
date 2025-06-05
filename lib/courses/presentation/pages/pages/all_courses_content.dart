@@ -60,6 +60,7 @@ class _AllCoursesContentState extends ConsumerState<AllCoursesContent> {
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 44),
                       child: CourseCard(
+                        id: course.id,
                         title: course.title,
                         title2: customTitle2,
                         difficulty: course.difficulty,

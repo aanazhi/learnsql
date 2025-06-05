@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learnsql/config/config.dart';
 import 'package:learnsql/courses/presentation/pages/all_pages.dart';
+import 'package:learnsql/courses/presentation/pages/pages/list_of_themes.dart';
+import 'package:learnsql/courses/presentation/widgets/all_widgets.dart';
 import 'package:learnsql/enterance_registration/presentation/pages/all_pages.dart';
 import 'package:learnsql/enterance_registration/providers/auth_reg_providers.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -65,6 +67,20 @@ class MyApp extends StatelessWidget {
               talker: ProviderScope.containerOf(context).read(talkerProvider),
             ),
         '/myPersonalAccount': (context) => const MyPersonalAccountScreen(),
+        '/tasks': (context) {
+          final args =
+              ModalRoute.of(context)?.settings.arguments
+                  as Map<String, dynamic>?;
+          final courseId = args?['courseId'] as int? ?? 0;
+          return TasksAndMaterialScreen(courseId: courseId);
+        },
+        '/themes': (context) {
+          final args =
+              ModalRoute.of(context)?.settings.arguments
+                  as Map<String, dynamic>?;
+          final themeId = args?['themeId'] as int? ?? 0;
+          return ListOfThemesScreen(themeId: themeId);
+        },
       },
       builder: (context, child) {
         return Material(
@@ -76,7 +92,8 @@ class MyApp extends StatelessWidget {
                       body: Stack(
                         children: [
                           child ?? const SizedBox(),
-                          if (kDebugMode) const DraggableDebugButton(),
+                          if (kDebugMode)
+                            DraggableDebugButton(navigatorKey: navigatorKey),
                         ],
                       ),
                     ),

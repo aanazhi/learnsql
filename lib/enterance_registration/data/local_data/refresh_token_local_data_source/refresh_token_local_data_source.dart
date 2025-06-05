@@ -4,6 +4,7 @@ import 'package:talker/talker.dart';
 abstract class RefreshTokenLocalDataSource {
   Future<void> setRefreshToken(String refreshToken);
   Future<String?> getRefreshToken();
+  Future<void> clearRefreshToken();
 }
 
 class RefreshTokenLocalDataSourceImpl implements RefreshTokenLocalDataSource {
@@ -40,6 +41,18 @@ class RefreshTokenLocalDataSourceImpl implements RefreshTokenLocalDataSource {
       _talker.log('💾 Saved refresh token to local storage');
     } catch (e, stackTrace) {
       _talker.error('❌ Failed to set refresh token', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> clearRefreshToken() async {
+    try {
+      _sharedPreferences.remove(_cashKey);
+
+      _talker.log('🔑 Clear refresh token from local storage');
+    } catch (e, stackTrace) {
+      _talker.error('❌ Failed to clear refresh token', e, stackTrace);
       rethrow;
     }
   }

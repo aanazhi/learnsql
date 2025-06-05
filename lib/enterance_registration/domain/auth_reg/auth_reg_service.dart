@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:learnsql/enterance_registration/data/remote_data/auth_reg/auth_reg_api.dart';
 import 'package:learnsql/enterance_registration/domain/auth_reg_entity/response_entity.dart';
 
@@ -17,7 +18,8 @@ abstract class AuthRegService {
     required String username,
     required String password,
   });
-  Future<Map<String, String>?> getGoogleAccountData();
+  // Future<GoogleSignInAccount?> signInWithGoogle();
+  Future<void> signInWithGoogle();
   Future<Map<String, dynamic>> resetPassword();
   Future<List<String>> getOrganization();
   Future<List<String>> getPeriod();
@@ -98,7 +100,7 @@ class AuthRegServiceImpl implements AuthRegService {
   }
 
   @override
-  Future<Map<String, String>?> getGoogleAccountData() async {
-    return await _authRegApi.getGoogleAccountData();
+  Future<void> signInWithGoogle() async {
+    return await _authRegApi.signInWithGoogle();
   }
 }

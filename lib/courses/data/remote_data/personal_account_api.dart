@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:learnsql/courses/data/model/group_model.dart';
-import 'package:learnsql/courses/data/model/personal_model.dart';
+import 'package:learnsql/courses/data/models/group_model.dart';
+import 'package:learnsql/courses/data/models/personal_model.dart';
 import 'package:talker/talker.dart';
 
 abstract class PersonalAccountApi {

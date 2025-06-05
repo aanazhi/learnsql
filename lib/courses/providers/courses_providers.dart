@@ -6,6 +6,13 @@ import 'package:learnsql/courses/data/remote_data/courses_api.dart';
 import 'package:learnsql/courses/data/remote_data/feedback_api.dart';
 import 'package:learnsql/courses/data/remote_data/personal_account_api.dart';
 import 'package:learnsql/courses/domain/courses/courses_entity/courses_entity.dart';
+import 'package:learnsql/courses/domain/courses/courses_entity/execution_result.dart';
+import 'package:learnsql/courses/domain/courses/courses_entity/materials_entity.dart';
+import 'package:learnsql/courses/domain/courses/courses_entity/one_task_entity.dart';
+import 'package:learnsql/courses/domain/courses/courses_entity/request_entity.dart';
+import 'package:learnsql/courses/domain/courses/courses_entity/solution_entity.dart';
+import 'package:learnsql/courses/domain/courses/courses_entity/tasks_entity.dart';
+import 'package:learnsql/courses/domain/courses/courses_entity/theme_entity.dart';
 import 'package:learnsql/courses/domain/courses/courses_service/courses_service.dart';
 import 'package:learnsql/courses/domain/feedback/feedback_service/feedback_service.dart';
 import 'package:learnsql/courses/domain/groups/group_entity/group_entity.dart';
@@ -110,6 +117,43 @@ final joinedCoursesProvider = FutureProvider<List<int>>((ref) async {
   return await coursesService.getJoinedCoursesIds();
 });
 
+final tasksProvider = FutureProvider.autoDispose.family<TasksEntity, int>((
+  ref,
+  id,
+) {
+  return ref.read(cousesServiceProvider).getTasks(id: id);
+});
+
+final materialsProvider = FutureProvider.autoDispose
+    .family<MaterialsEntity, int>((ref, id) {
+      return ref.read(cousesServiceProvider).getMaterials(id: id);
+    });
+
+final themesProvider = FutureProvider.autoDispose.family<ThemeEntity, int>((
+  ref,
+  id,
+) {
+  return ref.read(cousesServiceProvider).getTheme(id: id);
+});
+
+final executeSolutionProvider = FutureProvider.autoDispose
+    .family<SolutionResponseEntity, ExecuteSolutionParams>((ref, params) async {
+      final service = ref.read(cousesServiceProvider);
+      return service.executeSolution(
+        solution: params.solution,
+        taskId: params.taskId,
+        status: params.status,
+        id: params.id,
+      );
+    });
+
+final oneTaskProvider = FutureProvider.autoDispose.family<OneTaskEntity, int>((
+  ref,
+  id,
+) {
+  return ref.read(cousesServiceProvider).getOneTask(id: id);
+});
+
 // Feedback Providers
 final addFeedbackProvider = FutureProvider.family<dynamic, Map<String, String>>(
   (ref, data) async {
@@ -169,8 +213,30 @@ final isEditPersonalAccount = StateProvider<bool>((ref) => false);
 final personalChangesProvider = StateProvider<bool>((ref) => false);
 final selectedGroupInAccountProvider = StateProvider<int?>((ref) => null);
 final patchPersonalLoadingProvider = StateProvider<bool>((ref) => false);
+final courseIdProvider = StateProvider<int>((ref) => 0);
+final themeIdProvider = StateProvider<int>((ref) => 0);
 
 // Initial Values Providers
 final initialFirstNameProvider = StateProvider<String?>((ref) => null);
 final initialLastNameProvider = StateProvider<String?>((ref) => null);
 final initialGroupIdProvider = StateProvider<int?>((ref) => null);
+
+final executionHistoryProvider = StateNotifierProvider.family<
+  ExecutionHistoryNotifier,
+  List<ExecutionResult>,
+  int
+>((ref, taskId) {
+  return ExecutionHistoryNotifier();
+});
+
+class ExecutionHistoryNotifier extends StateNotifier<List<ExecutionResult>> {
+  ExecutionHistoryNotifier() : super([]);
+
+  void addResult(ExecutionResult result) {
+    state = [result, ...state];
+  }
+
+  void clearHistory() {
+    state = [];
+  }
+}
